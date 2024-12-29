@@ -3,16 +3,16 @@
  * Sau đó tạo một thể hiện của express bằng cách gọi hàm express().
  */
 'use strict'
-const express = require('express');
-// const { handleError } = require('./middleware/ExceptionHandler.middleware');
-const app = express();
-module.exports = app;
-const cookieParser = require('cookie-parser')
-const helmet = require("helmet");
-const morgan = require("morgan");
-const compression = require("compression");
-const cors = require('cors');
-const passport = require('passport')
+import express = require('express');
+import {handleError} from './middleware/ExceptionHandler.middleware';
+export const app = express();
+
+import  cookieParser = require( 'cookie-parser');
+import helmet from "helmet";
+import morgan = require("morgan");
+import compression = require("compression");
+import cors = require('cors');
+import passport = require('passport');
 
 // Use cookieParser with the same secret as JWT
 app.use(cookieParser(process.env.JWT_SECRET))
@@ -34,10 +34,10 @@ app.use(cors({
 require('./configs/config.app')
 
 // Init Db
-require('./dbs/init.mongodb.js')
+require('./dbs/init.mongodb')
 
 // Init passport before routes
-require('./configs/passport.config')(app)
+require('./configs/passport.config')
 app.use(passport.initialize())
 
 // Init routes
@@ -48,7 +48,7 @@ app.use(passport.initialize())
  * của ứng dụng
  *
  * */
-app.use('/', require('./routes/index.js'))
+// app.use('/', require('./routes/index.js'))
 
 // error handler
 // Sử dụng ExceptionHandler Middleware để xử lí lỗi
@@ -67,10 +67,10 @@ app.use('/', require('./routes/index.js'))
  *
  * */
 
-app.use((err, req, res, next) => {
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
     handleError(err, req, res, next);
 });
 /**
  * Sau khi đã import module vào bằng câu lệnh require thì ta thực hiện exports module
  */
-module.exports = app
+export default app;
