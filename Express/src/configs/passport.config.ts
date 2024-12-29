@@ -2,10 +2,10 @@ import passport = require('passport');
 import {Strategy as JwtStrategy, ExtractJwt} from 'passport-jwt';
 import User from '../models/user.model';
 
-// const logger = require('../utils/logger');
+import logger from '../utils/logger';
 import CryptoJS from 'crypto-js';
 
-// logger.info("Load into Passport");
+logger.info("Load into Passport");
 const options = {
     jwtFromRequest: (req: { cookies: { [x: string]: string | CryptoJS.lib.CipherParams; }; }) => {
         if (req && req.cookies && req.cookies['token']) {
@@ -15,7 +15,7 @@ const options = {
                 const bytes = CryptoJS.AES.decrypt(req.cookies['token'], secret);
                 return bytes.toString(CryptoJS.enc.Utf8);
             } catch (error) {
-                // logger.error("Error decrypting token:", error);
+                logger.error("Error decrypting token:", error);
                 return null;
             }
         }
@@ -38,7 +38,7 @@ const passportConfig = async() => {
             return done(null, user);
         } catch (error) {
             // Lỗi trong quá trình truy vấn
-            // logger.error("Authentication error:", error);
+            logger.error("Authentication error:", error);
             return done(error, false);
         }
     }));
